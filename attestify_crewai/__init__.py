@@ -47,6 +47,31 @@ Available tools (returned by ``toolset.tools()``):
 
   AttestifyGetControlTower
       Enterprise-only: live governance data and cross-tenant visibility.
+
+Attestify Trust — identity, signed evidence, free public verification.
+No wallet, no gas, no chain::
+
+    from attestify_crewai import provision_trust_agent, AttestifyToolset
+
+    # ONE TIME, outside any crew run:
+    creds = provision_trust_agent(
+        api_key=os.environ["ATTESTIFY_API_KEY"],
+        display_name="Research Crew",
+        framework="crewai",
+    )
+    # Store creds["agent_id"] / creds["private_key"] as TRUST_AGENT_ID /
+    # TRUST_PRIVATE_KEY -- from then on:
+
+    toolset = AttestifyToolset(api_key=os.environ["ATTESTIFY_API_KEY"])
+    tools = toolset.tools()  # includes AttestifySubmitTrustEvidence /
+                              # AttestifyVerifyTrustReceipt automatically
+
+  AttestifySubmitTrustEvidence
+      Sign and submit evidence of real work done. Returns a signed,
+      immutable, publicly verifiable receipt.
+
+  AttestifyVerifyTrustReceipt
+      Independently verify any Trust receipt by ID. Public, no API key.
 """
 
 from __future__ import annotations
@@ -58,9 +83,12 @@ from .tools import (
     AttestifyGetRecentLoops,
     AttestifyGetReceipt,
     AttestifyGetControlTower,
+    AttestifySubmitTrustEvidence,
+    AttestifyVerifyTrustReceipt,
 )
+from ._trust import provision_trust_agent, generate_trust_keypair
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 __all__ = [
     "AttestifyToolset",
@@ -69,4 +97,8 @@ __all__ = [
     "AttestifyGetRecentLoops",
     "AttestifyGetReceipt",
     "AttestifyGetControlTower",
+    "AttestifySubmitTrustEvidence",
+    "AttestifyVerifyTrustReceipt",
+    "provision_trust_agent",
+    "generate_trust_keypair",
 ]

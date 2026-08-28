@@ -48,6 +48,11 @@ class _Client:
         req  = urllib.request.Request(f"{self._base_url}{path}", data=data, headers=self._headers(), method="POST")
         return self._send(req, path)
 
+    def get_public(self, path: str) -> dict:
+        """GET with no X-API-Key header -- for Trust's public verify endpoint."""
+        req = urllib.request.Request(f"{self._base_url}{path}", headers={"Content-Type": "application/json"}, method="GET")
+        return self._send(req, path)
+
     def _send(self, req, path: str) -> dict:
         last_exc = None
         for _ in range(self._max_retries + 1):
